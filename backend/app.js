@@ -31,7 +31,7 @@ cloudinary.config({
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://echodraft.onrender.com",
     credentials: true,
   })
 );
