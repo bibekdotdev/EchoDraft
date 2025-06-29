@@ -46,4 +46,4 @@ app.use("/api/Auth", authRoutes);
 app.use("/api/admin", Admin);
 
 // Start Serve
-app.listen(port, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, () => console.log(`Server running on port ${port}`));
