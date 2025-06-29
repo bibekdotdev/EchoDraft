@@ -31,6 +31,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import useBlogStore from "../store/useBlogStore.js";
 import useAdminStore from "../store/useAdminStore.js";
+import { toast } from "react-toastify";
 
 const primaryColor = "#388087";
 const lightPrimary = "#5ca8b2";
@@ -165,8 +166,8 @@ const BlogForm = () => {
   const restoredContent = location.state?.content;
   const restoredPreviews = location.state?.previews;
 
-  const [loading, setLoading] = useState(false); // for submission
-  const [fetching, setFetching] = useState(false); // for fetching blog on edit
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   const {
     form,
@@ -217,6 +218,7 @@ const BlogForm = () => {
         });
       } catch (err) {
         console.error("Error fetching blog:", err);
+        toast.error("❌ Failed to fetch blog.");
       } finally {
         setFetching(false);
       }
@@ -267,15 +269,20 @@ const BlogForm = () => {
       setLoading(true);
       if (blogId) {
         await sendForUPdateBLogs(blogId, formData);
+        setLoading(false);
+        toast.success("✅ Blog updated successfully!");
         navigate("/admin");
       } else {
         await createBlock(formData);
+        setLoading(false);
+        toast.success("✅ Blog created successfully!");
       }
       resetForm();
     } catch (err) {
       console.error("Submit error:", err);
-    } finally {
       setLoading(false);
+      toast.error("❌ Failed to submit blog. Please try again.");
+    } finally {
     }
   };
 
@@ -283,7 +290,6 @@ const BlogForm = () => {
 
   return (
     <>
-      {/* 🌀 Backdrop for Fetching */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2 }}
         open={fetching}
@@ -291,7 +297,6 @@ const BlogForm = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      {/* 🌀 Backdrop for Submitting */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}

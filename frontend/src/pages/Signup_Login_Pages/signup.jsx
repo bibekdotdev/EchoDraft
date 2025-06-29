@@ -1,28 +1,26 @@
 import * as React from "react";
 import {
   Button,
-  Checkbox,
   CssBaseline,
-  FormControlLabel,
-  Divider,
   FormLabel,
   FormControl,
-  Link,
   TextField,
   Typography,
   Card as MuiCard,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
 import LockIcon from "@mui/icons-material/Lock";
-import axios from "axios";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+
+// ✅ Toastify
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // 🌟 Primary Color Theme
 const primaryColor = "#388087";
 
+// Styled Card
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -41,6 +39,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
+// Center Container
 const SignUpContainer = styled("div")(({ theme }) => ({
   height: "100vh",
   width: "100%",
@@ -74,13 +73,13 @@ export default function SignUp() {
     try {
       let res = await forOtpWithData(payload);
       pushId(res.data.id);
+      toast.success("✅ OTP sent successfully!");
       navigate("/OtpSubmit");
     } catch (err) {
-      if (err?.response?.data?.message) {
-        console.error("OTP request failed:", err.response.data.message);
-      } else {
-        console.error("An unexpected error occurred:", err.message);
-      }
+      const msg =
+        err?.response?.data?.message || err.message || "Signup failed.";
+      toast.error("❌ " + msg);
+      console.error("Signup error:", msg);
     }
   };
 
@@ -93,6 +92,7 @@ export default function SignUp() {
     if (!username.value || username.value.length < 3) {
       setUsernameError(true);
       setUsernameErrorMessage("Username must be at least 3 characters.");
+      toast.error("❌ Username must be at least 3 characters.");
       isValid = false;
     } else {
       setUsernameError(false);
@@ -102,6 +102,7 @@ export default function SignUp() {
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage("Enter a valid email address.");
+      toast.error("❌ Enter a valid email address.");
       isValid = false;
     } else {
       setEmailError(false);
@@ -111,6 +112,7 @@ export default function SignUp() {
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
+      toast.error("❌ Password must be at least 6 characters.");
       isValid = false;
     } else {
       setPasswordError(false);
@@ -219,6 +221,9 @@ export default function SignUp() {
           </Typography>
         </Card>
       </SignUpContainer>
+
+      {/* ✅ Toast container for notifications */}
+      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
 }

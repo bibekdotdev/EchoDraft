@@ -16,6 +16,10 @@ import BlogDetails from "./pages/BlogDetails";
 import Admin from "./pages/AdminPanel";
 import Editing from "./pages/Eding";
 
+// ✅ Import ToastContainer
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -31,7 +35,6 @@ export default function App() {
   useEffect(() => {
     const check = async () => {
       await checkLogin();
-
       setAuthLoading(false);
     };
     check();
@@ -55,6 +58,19 @@ export default function App() {
 
   return (
     <Router>
+      {/* ✅ ToastContainer globally available */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <Box sx={{ display: "flex", minHeight: "100vh" }}>
         <CssBaseline />
         <Navbar handleDrawerToggle={handleDrawerToggle} />
@@ -87,12 +103,11 @@ export default function App() {
               path="/BlogDetails/:id"
               element={Auth ? <BlogDetails /> : <SignIn />}
             />
-            <Route path="/Admin" element={Auth ? <Admin /> : <SignIn />} />`
+            <Route path="/Admin" element={Auth ? <Admin /> : <SignIn />} />
             <Route
               path="/EditBlog/:id"
               element={Auth ? <Editing /> : <SignIn />}
             />
-            `
           </Routes>
         </Box>
       </Box>

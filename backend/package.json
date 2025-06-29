@@ -1,11 +1,10 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "start": "node app.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,5 +22,9 @@
     "nodemailer": "^7.0.3",
     "passport-google-oauth20": "^2.0.0",
     "streamifier": "^0.1.1"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "description": ""
 }

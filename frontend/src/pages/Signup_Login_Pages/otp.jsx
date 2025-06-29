@@ -16,7 +16,9 @@ import LockIcon from "@mui/icons-material/Lock";
 import axios from "axios";
 import useAutStore from "../../store/useAuthStore";
 
-// Styled Card
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -62,17 +64,19 @@ export default function OtpSubmit() {
 
     try {
       setError(""); // Clear previous error
-
-      const response = await signUPRequestWith_verifyOtp(otp); // Make API call
+      const response = await signUPRequestWith_verifyOtp(otp);
       console.log("OTP Verified:", response.data);
-      setSuccessDialogOpen(true);
+
+      toast.success("✅ OTP verified successfully!");
+      setTimeout(() => {
+        navigate("/signin");
+      }, 2000); // redirect after 2 seconds
     } catch (err) {
-      console.error("OTP verification error:", err);
-      setError(
+      const message =
         err?.response?.data?.message ||
-          err?.message ||
-          "OTP verification failed. Please try again."
-      );
+        err?.message ||
+        "OTP verification failed. Please try again.";
+      toast.error(`❌ ${message}`);
     }
   };
 
@@ -168,6 +172,7 @@ export default function OtpSubmit() {
           </DialogActions>
         </Dialog>
       </OtpContainer>
+      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
 }

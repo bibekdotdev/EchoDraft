@@ -7,13 +7,11 @@ const blockRoutes = require("./routes/blockRoutes");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const Admin = require("./routes/adminRoutes");
-const port = process.env.PORT || 8080
+const port = 8080;
 require("dotenv").config();
 dotenv.config();
 mongoose
-  .connect(
-    "mongodb+srv://bibekjana68:Phv$sh4ZVhqRLU$@cluster0.bblbfgc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.mongoose_link)
   .then(() => {
     console.log("✅ MongoDB connected");
   })
@@ -25,14 +23,14 @@ const app = express();
 
 // Cloudinary config
 cloudinary.config({
-  cloud_name:process.env.cloud_name,
-  api_key:process.env.api_key,
-  api_secret:process.env.api_secret,
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
 });
 
 app.use(
   cors({
-    origin: "https://echodraft-hmmz.onrender.com",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

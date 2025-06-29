@@ -16,10 +16,13 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LockIcon from "@mui/icons-material/Lock";
-import GoogleIcon from "@mui/icons-material/Google";
 import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+
+// ✅ Toastify
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // 🌟 Primary Color Theme
 const primaryColor = "#388087";
@@ -77,9 +80,10 @@ export default function SignIn() {
               user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
-          console.log("✅ Clerk user synced with backend");
+          toast.success("✅ Signed in successfully with Google!");
           hasSynced.current = true;
         } catch (error) {
+          toast.error("❌ Failed to sync Google sign-in.");
           console.error("❌ Failed to sync user:", error);
         }
       };
@@ -99,11 +103,14 @@ export default function SignIn() {
 
     try {
       await call_Signin_routes(payload);
+      toast.success("✅ Signed in successfully!");
+      navigate("/"); // redirect on success
     } catch (err) {
       console.error(
         "Login failed:",
         err?.response?.data?.message || err.message
       );
+      toast.error("❌ Invalid email or password.");
     }
   };
 
@@ -115,6 +122,7 @@ export default function SignIn() {
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage("Enter a valid email address.");
+      toast.error("❌ Invalid email format.");
       isValid = false;
     } else {
       setEmailError(false);
@@ -124,6 +132,7 @@ export default function SignIn() {
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters.");
+      toast.error("❌ Password too short.");
       isValid = false;
     } else {
       setPasswordError(false);
@@ -251,6 +260,9 @@ export default function SignIn() {
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      {/* ✅ Toast Container */}
+      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
 }
