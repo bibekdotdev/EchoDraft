@@ -7,6 +7,7 @@ const blockRoutes = require("./routes/blockRoutes");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const Admin = require("./routes/adminRoutes");
+const port = process.env.PORT || 8080
 require("dotenv").config();
 dotenv.config();
 mongoose
@@ -44,6 +45,5 @@ app.use("/api/blocks", blockRoutes);
 app.use("/api/Auth", authRoutes);
 app.use("/api/admin", Admin);
 
-// Start Server
-const PORT = "https://echo-draft-lym8.onrender.com";
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start Serve
+app.listen(port, () => console.log(`Server running on port ${PORT}`));
