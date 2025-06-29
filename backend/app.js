@@ -45,5 +45,5 @@ app.use("/api/Auth", authRoutes);
 app.use("/api/admin", Admin);
 
 // Start Server
-const PORT = "https://echo-draft-lym8.onrender.com/" || 8080;
+const PORT = "https://echo-draft-lym8.onrender.com" || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
