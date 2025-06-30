@@ -268,6 +268,7 @@ const BlogForm = () => {
       } else {
         await createBlock(formData);
         setLoading(false);
+         navigate("/admin");
      
       }
       resetForm();
