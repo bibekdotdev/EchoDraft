@@ -8,11 +8,11 @@ import {
   FormLabel,
   FormControl,
   Divider,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LockIcon from "@mui/icons-material/Lock";
@@ -20,10 +20,11 @@ import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// Toastify
+// ✅ Toastify
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// 🌟 Primary Color
 const primaryColor = "#388087";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -68,19 +69,20 @@ export default function SignIn() {
 
   const hasSynced = React.useRef(false);
 
-  // ✅ Show toast after logout using location.state
+  // ✅ Show toast if passed from logout
   React.useEffect(() => {
     if (location.state?.toastMessage) {
       setTimeout(() => {
         toast.success(location.state.toastMessage);
-      }, 300);
+      }, 300); // show after small delay
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
 
+  // ✅ Handle Clerk Google login once
   React.useEffect(() => {
     if (isSignedIn && user && !hasSynced.current) {
-      const sendToBackend = async () => {
+      const syncUser = async () => {
         try {
           const payload = {
             clerkId: user.id,
@@ -91,23 +93,22 @@ export default function SignIn() {
           await clerk_auth(payload);
           toast.success("✅ Signed in successfully with Google!");
           hasSynced.current = true;
-        } catch (error) {
-          toast.error("❌ Failed to sync Google sign-in.");
-          console.error("❌ Failed to sync user:", error);
+        } catch (err) {
+          toast.error("❌ Failed to sync Google login.");
         }
       };
-      sendToBackend();
+      syncUser();
     }
   }, [isSignedIn, user, clerk_auth]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!validateInputs()) return;
 
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(e.currentTarget);
     const payload = {
-      email: data.get("email"),
-      password: data.get("password"),
+      email: formData.get("email"),
+      password: formData.get("password"),
     };
 
     try {
@@ -159,10 +160,7 @@ export default function SignIn() {
       <CssBaseline />
       <SignUpContainer>
         <Card>
-          <LockIcon
-            fontSize="large"
-            sx={{ alignSelf: "center", color: primaryColor }}
-          />
+          <LockIcon fontSize="large" sx={{ alignSelf: "center", color: primaryColor }} />
           <Typography
             component="h1"
             variant="h5"
@@ -173,40 +171,32 @@ export default function SignIn() {
             Sign In
           </Typography>
 
-          <form
-            onSubmit={handleSubmit}
-            noValidate
-            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-          >
+          <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <FormControl>
-              <FormLabel htmlFor="email" sx={{ fontWeight: 500 }}>
-                Email
-              </FormLabel>
+              <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
-                error={emailError}
-                helperText={emailErrorMessage}
                 id="email"
                 type="email"
                 name="email"
                 placeholder="you@email.com"
                 required
                 fullWidth
+                error={emailError}
+                helperText={emailErrorMessage}
               />
             </FormControl>
 
             <FormControl>
-              <FormLabel htmlFor="password" sx={{ fontWeight: 500 }}>
-                Password
-              </FormLabel>
+              <FormLabel htmlFor="password">Password</FormLabel>
               <TextField
-                error={passwordError}
-                helperText={passwordErrorMessage}
                 id="password"
+                type="password"
                 name="password"
                 placeholder="••••••"
-                type="password"
                 required
                 fullWidth
+                error={passwordError}
+                helperText={passwordErrorMessage}
               />
             </FormControl>
 
@@ -220,7 +210,7 @@ export default function SignIn() {
                 ":hover": { backgroundColor: "#2f6c74" },
               }}
             >
-              Sign in
+              Sign In
             </Button>
           </form>
 
@@ -239,10 +229,9 @@ export default function SignIn() {
           <Button
             fullWidth
             variant="outlined"
-            sx={{ mt: 1 }}
             onClick={handleGoogleReSignIn}
           >
-            Continue with other options
+            Continue with Google
           </Button>
 
           <SignInButton strategy="oauth_google" mode="modal">
@@ -254,9 +243,7 @@ export default function SignIn() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Forgot Password</DialogTitle>
         <DialogContent>
-          <Typography>
-            Reset instructions will be sent to your email.
-          </Typography>
+          <Typography>Reset instructions will be sent to your email.</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
