@@ -90,11 +90,13 @@ router.post("/verify-otp", async (req, res) => {
     if (userData.otp === otp && userData.otpExpires > now) {
       await new User({ name, email, password }).save();
       res.cookie("token", emailJwtSign(email), {
-        signed: true,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
-      });
+  signed: true,
+  httpOnly: true,
+  secure: true, // required for HTTPS
+  sameSite: "none", // allow cross-origin
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
 
       await userData.deleteOne();
       return res
@@ -123,11 +125,13 @@ router.post("/signin", isSignin, async (req, res) => {
     console.log(isMatch);
     if (isMatch) {
       res.cookie("token", emailJwtSign(email), {
-        signed: true,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
-      });
+  signed: true,
+  httpOnly: true,
+  secure: true, // required for HTTPS
+  sameSite: "none", // allow cross-origin
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
       return res.status(200).json({ message: "Login successful", email });
     } else {
       return res.status(400).json({ message: "Invalid password" });
@@ -152,23 +156,27 @@ router.post("/clerk-auth", async (req, res) => {
       user.clerkId = clerkId;
       user.name = name;
       await user.save();
-      res.cookie("token", emailJwtSign(email), {
-        signed: true,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
-      });
+     res.cookie("token", emailJwtSign(email), {
+  signed: true,
+  httpOnly: true,
+  secure: true, // required for HTTPS
+  sameSite: "none", // allow cross-origin
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
 
       console.log(email);
       return res.status(200).json({ message: "User updated", email });
     } else {
       const newUser = await new User({ clerkId, name, email }).save();
-      res.cookie("token", emailJwtSign(email), {
-        signed: true,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
-      });
+     res.cookie("token", emailJwtSign(email), {
+  signed: true,
+  httpOnly: true,
+  secure: true, // required for HTTPS
+  sameSite: "none", // allow cross-origin
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
       console.log(email);
       return res.status(201).json({ message: "User created", email });
     }
@@ -181,11 +189,12 @@ router.post("/clerk-auth", async (req, res) => {
 router.post("/signOut", protectedRoute, (req, res, next) => {
   try {
     res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
+  httpOnly: true,
+  sameSite: "none", // 🔄 match with the cookie
+  secure: true,
+  signed: true,
+  path: "/",
+});
 
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (err) {
