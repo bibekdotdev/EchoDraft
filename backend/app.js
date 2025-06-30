@@ -7,8 +7,9 @@ const blockRoutes = require("./routes/blockRoutes");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const Admin = require("./routes/adminRoutes");
-const port = 8080;
 require("dotenv").config();
+const port = process.env.PORT || 4000 
+
 dotenv.config();
 mongoose
   .connect(process.env.mongoose_link)
