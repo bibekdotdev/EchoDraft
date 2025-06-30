@@ -114,10 +114,10 @@ export default function SignIn() {
     try {
       
       await call_Signin_routes(payload);
-      toast.success("✅ Signed in successfully!");
-       setTimeout(() => {
+ 
+    
          navigate("/");
-      }, 500);
+  
       
      
     } catch (err) {
