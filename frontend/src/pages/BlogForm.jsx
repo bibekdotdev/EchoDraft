@@ -263,12 +263,12 @@ const BlogForm = () => {
       if (blogId) {
         await sendForUPdateBLogs(blogId, formData);
         setLoading(false);
-        toast.success("✅ Blog updated successfully!");
+       
         navigate("/admin");
       } else {
         await createBlock(formData);
         setLoading(false);
-        toast.success("✅ Blog created successfully!");
+     
       }
       resetForm();
     } catch (err) {
