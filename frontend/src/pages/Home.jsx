@@ -29,7 +29,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
-  const { storeAllData, fetchBlogs, getscarchResult, allData } = useBlogStore();
+  const { storeAllData, fetchBlogs, getSearchResult, allData } = useBlogStore();
 
   const theme = useTheme();
   const isSmallOrMedium = useMediaQuery(theme.breakpoints.down("lg"));
@@ -66,7 +66,7 @@ const Home = () => {
 
       try {
         setLoading(true); // Start loading
-        const response = await getscarchResult(value);
+        const response = await getSearchResult(value);
         const blogBlocks = response.data.blocks;
         storeAllData(blogBlocks);
       } catch (error) {
