@@ -91,7 +91,7 @@ export default function SignIn() {
               user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
-          toast.success("✅ Signed in successfully with Google!");
+  
           hasSynced.current = true;
         } catch (err) {
           toast.error("❌ Failed to sync Google login.");
@@ -113,7 +113,7 @@ export default function SignIn() {
 
     try {
       await call_Signin_routes(payload);
-      toast.success("✅ Signed in successfully!");
+     
       navigate("/");
     } catch (err) {
       toast.error("❌ Invalid email or password.");
