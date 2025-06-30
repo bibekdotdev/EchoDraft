@@ -61,10 +61,10 @@ export default function OtpSubmit() {
       const response = await signUPRequestWith_verifyOtp(otp);
       console.log("OTP Verified:", response.data);
 
-      toast.success("✅ OTP verified successfully!");
-      setTimeout(() => {
+
+
         navigate("/signin");
-      }, 2000); // redirect after 2 seconds
+    
     } catch (err) {
       const message =
         err?.response?.data?.message ||
