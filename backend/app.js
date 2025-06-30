@@ -9,6 +9,15 @@ const cookieParser = require("cookie-parser");
 const Admin = require("./routes/adminRoutes");
 require("dotenv").config();
 const port = process.env.PORT || 4000 
+const path = require("path");
+
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "client", "dist"))); // or "build"
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
+
 
 dotenv.config();
 mongoose
