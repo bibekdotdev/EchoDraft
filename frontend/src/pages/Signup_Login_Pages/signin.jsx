@@ -8,24 +8,24 @@ import {
   FormLabel,
   FormControl,
   Divider,
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LockIcon from "@mui/icons-material/Lock";
 import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
-import { useNavigate, useLocation } from "react-router-dom";
 import useAutStore from "../../store/useAuthStore";
+import { useNavigate, useLocation } from "react-router-dom";
+
+// Toastify
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// 🌟 Theme
 const primaryColor = "#388087";
 
-// Styled Card
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -68,16 +68,16 @@ export default function SignIn() {
 
   const hasSynced = React.useRef(false);
 
-  // ✅ Handle toast from redirect (logout success, etc.)
+  // ✅ Show toast after logout using location.state
   React.useEffect(() => {
     if (location.state?.toastMessage) {
-      toast.success(location.state.toastMessage);
-      // Clear state to prevent repeat
+      setTimeout(() => {
+        toast.success(location.state.toastMessage);
+      }, 300);
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
 
-  // ✅ Clerk user Google sync
   React.useEffect(() => {
     if (isSignedIn && user && !hasSynced.current) {
       const sendToBackend = async () => {
@@ -85,13 +85,15 @@ export default function SignIn() {
           const payload = {
             clerkId: user.id,
             name: user.username || user.firstName || "unknown",
-            email: user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
+            email:
+              user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
           toast.success("✅ Signed in successfully with Google!");
           hasSynced.current = true;
         } catch (error) {
           toast.error("❌ Failed to sync Google sign-in.");
+          console.error("❌ Failed to sync user:", error);
         }
       };
       sendToBackend();
@@ -157,12 +159,25 @@ export default function SignIn() {
       <CssBaseline />
       <SignUpContainer>
         <Card>
-          <LockIcon fontSize="large" sx={{ alignSelf: "center", color: primaryColor }} />
-          <Typography component="h1" variant="h5" textAlign="center" fontWeight={600} color={primaryColor}>
+          <LockIcon
+            fontSize="large"
+            sx={{ alignSelf: "center", color: primaryColor }}
+          />
+          <Typography
+            component="h1"
+            variant="h5"
+            textAlign="center"
+            fontWeight={600}
+            color={primaryColor}
+          >
             Sign In
           </Typography>
 
-          <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <FormControl>
               <FormLabel htmlFor="email" sx={{ fontWeight: 500 }}>
                 Email
@@ -221,11 +236,15 @@ export default function SignIn() {
 
           <Divider sx={{ my: 2 }}>or continue with</Divider>
 
-          <Button fullWidth variant="outlined" sx={{ mt: 1 }} onClick={handleGoogleReSignIn}>
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mt: 1 }}
+            onClick={handleGoogleReSignIn}
+          >
             Continue with other options
           </Button>
 
-          {/* Hidden Clerk trigger */}
           <SignInButton strategy="oauth_google" mode="modal">
             <span id="google-signin-trigger" style={{ display: "none" }} />
           </SignInButton>
@@ -235,7 +254,9 @@ export default function SignIn() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Forgot Password</DialogTitle>
         <DialogContent>
-          <Typography>Reset instructions will be sent to your email.</Typography>
+          <Typography>
+            Reset instructions will be sent to your email.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
