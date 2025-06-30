@@ -116,7 +116,6 @@ const Admin = () => {
           onFilterClick={() => setDrawerOpen(true)}
         />
 
-        {/* 🔄 Top Loading Bar */}
         {loading && <LinearProgress color="primary" sx={{ my: 1 }} />}
 
         <Box display="flex" flexDirection="row">
@@ -125,14 +124,14 @@ const Admin = () => {
               <Box display="flex" justifyContent="center" mt={4}>
                 <CircularProgress />
               </Box>
-            ) : allData.length === 0 ? (
+            ) : !Array.isArray(allData) || allData.length === 0 ? (
               <Typography textAlign="center">No blogs found.</Typography>
             ) : (
               allData.map((post) => {
-                const firstTitleObj = post.content.find(
+                const firstTitleObj = post.content?.find(
                   (item) => item.type === "title"
                 );
-                const firstImageObj = post.content.find(
+                const firstImageObj = post.content?.find(
                   (item) => item.type === "image"
                 );
                 const tags = [post.blockType] || ["General"];
@@ -242,7 +241,9 @@ const Admin = () => {
                                 color="primary"
                               />
                               <Typography variant="body2">
-                                {post.likes?.length}
+                                {Array.isArray(post.likes)
+                                  ? post.likes.length
+                                  : 0}
                               </Typography>
                             </Box>
                           </Tooltip>
@@ -253,7 +254,9 @@ const Admin = () => {
                                 color="error"
                               />
                               <Typography variant="body2">
-                                {post.dislikes?.length}
+                                {Array.isArray(post.dislikes)
+                                  ? post.dislikes.length
+                                  : 0}
                               </Typography>
                             </Box>
                           </Tooltip>
@@ -338,7 +341,9 @@ const Admin = () => {
                               fontSize: "0.875rem",
                               color: "#888",
                             }}
-                          ></Box>
+                          >
+                            No image
+                          </Box>
                         )}
                       </Box>
                     </CardContent>
@@ -348,7 +353,6 @@ const Admin = () => {
             )}
           </Box>
 
-          {/* Sidebar Desktop */}
           {!isSmallOrMedium && (
             <Box
               sx={{
@@ -363,7 +367,6 @@ const Admin = () => {
             </Box>
           )}
 
-          {/* Sidebar Drawer (Mobile) */}
           <Drawer
             anchor="right"
             open={drawerOpen}
@@ -375,7 +378,6 @@ const Admin = () => {
         </Box>
       </Box>
 
-      {/* Confirm Delete Dialog */}
       <Dialog
         open={openConfirmDialog}
         onClose={() => setOpenConfirmDialog(false)}
