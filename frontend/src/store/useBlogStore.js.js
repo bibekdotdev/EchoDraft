@@ -114,7 +114,7 @@ const useBlogStore = create((set, get) => ({
 
   // 🔍 Search blogs
   getSearchResult: async (value) => {
-    return await axiosInstanace.get(`/blocks/getSearchResult/${value}`);
+    return await axiosInstanace.get(`/blocks/getscarchResult/${value}`);
   },
 
   // 🔃 Filter blogs
