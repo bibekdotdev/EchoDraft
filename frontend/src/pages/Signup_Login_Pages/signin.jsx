@@ -236,7 +236,7 @@ export default function SignIn() {
             variant="outlined"
             onClick={handleGoogleReSignIn}
           >
-            Continue with Google
+            Continue with other options
           </Button>
 
           <SignInButton strategy="oauth_google" mode="modal">
