@@ -19,13 +19,12 @@ import LockIcon from "@mui/icons-material/Lock";
 import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// 🌟 Theme Colors
 const primaryColor = "#388087";
 
-// Styled Card
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -44,7 +43,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-const SignUpContainer = styled("div")(() => ({
+const SignUpContainer = styled("div")(({ theme }) => ({
   height: "100vh",
   width: "100%",
   display: "flex",
@@ -74,7 +73,8 @@ export default function SignIn() {
           const payload = {
             clerkId: user.id,
             name: user.username || user.firstName || "unknown",
-            email: user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
+            email:
+              user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
           toast.success("✅ Signed in successfully with Google!");
@@ -103,8 +103,8 @@ export default function SignIn() {
       toast.success("✅ Signed in successfully!");
       navigate("/");
     } catch (err) {
-      toast.error("❌ Invalid email or password.");
       console.error("Login failed:", err?.response?.data?.message || err.message);
+      toast.error("❌ Invalid email or password.");
     }
   };
 
@@ -140,6 +140,7 @@ export default function SignIn() {
 
   const handleGoogleReSignIn = async () => {
     await signOut();
+    hasSynced.current = false;
     document.getElementById("google-signin-trigger").click();
   };
 
@@ -148,7 +149,10 @@ export default function SignIn() {
       <CssBaseline />
       <SignUpContainer>
         <Card>
-          <LockIcon fontSize="large" sx={{ alignSelf: "center", color: primaryColor }} />
+          <LockIcon
+            fontSize="large"
+            sx={{ alignSelf: "center", color: primaryColor }}
+          />
           <Typography
             component="h1"
             variant="h5"
@@ -228,17 +232,15 @@ export default function SignIn() {
             sx={{ mt: 1 }}
             onClick={handleGoogleReSignIn}
           >
-            Continue with Google
+            Continue with other options
           </Button>
 
-          {/* Hidden Google Trigger Button */}
           <SignInButton strategy="oauth_google" mode="modal">
             <span id="google-signin-trigger" style={{ display: "none" }} />
           </SignInButton>
         </Card>
       </SignUpContainer>
 
-      {/* Optional Forgot Password Dialog */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Forgot Password</DialogTitle>
         <DialogContent>
@@ -249,7 +251,6 @@ export default function SignIn() {
         </DialogActions>
       </Dialog>
 
-      {/* ✅ Toast Message Container */}
       <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
