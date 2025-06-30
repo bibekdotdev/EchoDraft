@@ -31,7 +31,7 @@ cloudinary.config({
 
 app.use(
   cors({
-    origin: "https://echo-draft-67wv.onrender.com",
+    origin: "https://echo-draft-67wv.onrender.com/",
     credentials: true,
   })
 );
