@@ -135,8 +135,9 @@ const BlockItem = React.memo(
       ) : (
         <>
           <Typography fontWeight={600} gutterBottom>
-            ✏️ {item.type.charAt(0).toUpperCase() + item.type.slice(1)} #
-            {index + 1}
+            ✏️ {item.type.charAt(0).toUpperCase() + item.type.slice(1)} #{
+              index + 1
+            }
           </Typography>
           <TextField
             fullWidth
@@ -165,10 +166,8 @@ const BlogForm = () => {
   const blogId = location.state?.blogId;
   const restoredContent = location.state?.content;
   const restoredPreviews = location.state?.previews;
-
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-
   const {
     form,
     content,
@@ -187,7 +186,6 @@ const BlogForm = () => {
     createBlock,
     setPreviews,
   } = useBlogStore();
-
   const { fetchBlogById, sendForUPdateBLogs } = useAdminStore();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -218,17 +216,14 @@ const BlogForm = () => {
         });
       } catch (err) {
         console.error("Error fetching blog:", err);
-        toast.error("❌ Failed to fetch blog.");
+        toast.error("\u274c Failed to fetch blog.");
       } finally {
         setFetching(false);
       }
     };
 
-    if (restoredContent?.length) {
-      loadFromLiveView();
-    } else if (blogId) {
-      fetchBlog();
-    }
+    if (restoredContent?.length) loadFromLiveView();
+    else if (blogId) fetchBlog();
   }, [blogId, restoredContent]);
 
   const handleSelectChange = (e) => {
@@ -250,8 +245,7 @@ const BlogForm = () => {
     const cleanContent = content.map((item) => {
       if (item.type === "image") {
         if (images[item.id]) return { id: item.id, type: "image" };
-        else if (item.value)
-          return { id: item.id, type: "image", value: item.value };
+        else if (item.value) return { id: item.id, type: "image", value: item.value };
         else return { id: item.id, type: "image" };
       } else {
         return { id: item.id, type: item.type, value: item.value };
@@ -260,7 +254,6 @@ const BlogForm = () => {
 
     formData.append("type", form.type);
     formData.append("content", JSON.stringify(cleanContent));
-
     Object.entries(images).forEach(([id, file]) => {
       formData.append("images", file, id);
     });
@@ -269,20 +262,19 @@ const BlogForm = () => {
       setLoading(true);
       if (blogId) {
         await sendForUPdateBLogs(blogId, formData);
-        setLoading(false);
-        toast.success("✅ Blog updated successfully!");
-        navigate("/admin");
+        toast.success("\u2705 Blog updated successfully!");
+        setTimeout(() => navigate("/admin"), 500);
       } else {
         await createBlock(formData);
-        setLoading(false);
-        toast.success("✅ Blog created successfully!");
+        toast.success("\u2705 Blog created successfully!");
+        setTimeout(() => navigate("/admin"), 500);
       }
       resetForm();
     } catch (err) {
       console.error("Submit error:", err);
-      setLoading(false);
-      toast.error("❌ Failed to submit blog. Please try again.");
+      toast.error("\u274c Failed to submit blog. Please try again.");
     } finally {
+      setLoading(false);
     }
   };
 
@@ -290,31 +282,17 @@ const BlogForm = () => {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2 }}
-        open={fetching}
-      >
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2 }} open={fetching}>
         <CircularProgress color="inherit" />
       </Backdrop>
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-
       <Box sx={{ py: 5, maxWidth: "1200px", margin: "0 auto" }}>
-        <Typography
-          variant={isMobile ? "h5" : "h4"}
-          fontWeight={700}
-          gutterBottom
-          sx={{ mt: isMobile ? 1 : 3, color: primaryColor }}
-        >
+        <Typography variant={isMobile ? "h5" : "h4"} fontWeight={700} gutterBottom sx={{ mt: isMobile ? 1 : 3, color: primaryColor }}>
           📄 Content Block Builder
         </Typography>
         <Divider sx={{ my: 3, borderColor: lightPrimary }} />
-
         <FormControl fullWidth error={typeError} required sx={{ mb: 3 }}>
           <InputLabel>Blog Type</InputLabel>
           <Select
@@ -332,11 +310,8 @@ const BlogForm = () => {
               </MenuItem>
             ))}
           </Select>
-          {typeError && (
-            <FormHelperText>Please select a blog type</FormHelperText>
-          )}
+          {typeError && <FormHelperText>Please select a blog type</FormHelperText>}
         </FormControl>
-
         <Stack spacing={2}>
           {content.map((item, index) => (
             <BlockItem
@@ -349,7 +324,6 @@ const BlogForm = () => {
             />
           ))}
         </Stack>
-
         <Box mt={3} textAlign="right">
           <FormControl sx={{ minWidth: 200 }}>
             <InputLabel>Add Block</InputLabel>
@@ -360,11 +334,7 @@ const BlogForm = () => {
               IconComponent={() => <span style={{ paddingRight: 8 }}>➕</span>}
             >
               {blockOptions.map((opt) => (
-                <MenuItem
-                  key={opt.type}
-                  value={opt.type}
-                  disabled={opt.type !== "title" && !hasTitle}
-                >
+                <MenuItem key={opt.type} value={opt.type} disabled={opt.type !== "title" && !hasTitle}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     {opt.icon}
                     <span>{opt.label}</span>
@@ -374,7 +344,6 @@ const BlogForm = () => {
             </Select>
           </FormControl>
         </Box>
-
         {content.length > 0 && (
           <Stack direction={isMobile ? "column" : "row"} spacing={2} mt={4}>
             <Button
@@ -395,11 +364,7 @@ const BlogForm = () => {
             {!blogId && (
               <Button
                 fullWidth
-                onClick={() =>
-                  navigate("/liveview", {
-                    state: { content, previews },
-                  })
-                }
+                onClick={() => navigate("/liveview", { state: { content, previews } })}
                 startIcon={<Eye size={20} />}
                 variant="outlined"
                 disabled={loading}
