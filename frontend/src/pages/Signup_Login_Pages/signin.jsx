@@ -7,7 +7,6 @@ import {
   Card as MuiCard,
   FormLabel,
   FormControl,
-  Link,
   Divider,
   Dialog,
   DialogTitle,
@@ -20,15 +19,13 @@ import LockIcon from "@mui/icons-material/Lock";
 import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
-
-// ✅ Toastify
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// 🌟 Primary Color Theme
+// 🌟 Theme Colors
 const primaryColor = "#388087";
 
-// Styled Components
+// Styled Card
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -47,7 +44,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-const SignUpContainer = styled("div")(({ theme }) => ({
+const SignUpContainer = styled("div")(() => ({
   height: "100vh",
   width: "100%",
   display: "flex",
@@ -77,15 +74,14 @@ export default function SignIn() {
           const payload = {
             clerkId: user.id,
             name: user.username || user.firstName || "unknown",
-            email:
-              user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
+            email: user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
           toast.success("✅ Signed in successfully with Google!");
           hasSynced.current = true;
         } catch (error) {
           toast.error("❌ Failed to sync Google sign-in.");
-          console.error("❌ Failed to sync user:", error);
+          console.error("❌ Clerk sync error:", error);
         }
       };
       sendToBackend();
@@ -105,13 +101,10 @@ export default function SignIn() {
     try {
       await call_Signin_routes(payload);
       toast.success("✅ Signed in successfully!");
-      navigate("/"); // redirect on success
+      navigate("/");
     } catch (err) {
-      console.error(
-        "Login failed:",
-        err?.response?.data?.message || err.message
-      );
       toast.error("❌ Invalid email or password.");
+      console.error("Login failed:", err?.response?.data?.message || err.message);
     }
   };
 
@@ -155,10 +148,7 @@ export default function SignIn() {
       <CssBaseline />
       <SignUpContainer>
         <Card>
-          <LockIcon
-            fontSize="large"
-            sx={{ alignSelf: "center", color: primaryColor }}
-          />
+          <LockIcon fontSize="large" sx={{ alignSelf: "center", color: primaryColor }} />
           <Typography
             component="h1"
             variant="h5"
@@ -220,15 +210,15 @@ export default function SignIn() {
             </Button>
           </form>
 
-         <Box sx={{ textAlign: "center", mt: 2 }}>
-  <Typography
-    variant="body2"
-    sx={{ color: primaryColor, cursor: "pointer", fontSize: "14px" }}
-    onClick={() => navigate("/signup")}
-  >
-    Don’t have an account? Sign up
-  </Typography>
-</Box>
+          <Box sx={{ textAlign: "center", mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: primaryColor, cursor: "pointer", fontSize: "14px" }}
+              onClick={() => navigate("/signup")}
+            >
+              Don’t have an account? Sign up
+            </Typography>
+          </Box>
 
           <Divider sx={{ my: 2 }}>or continue with</Divider>
 
@@ -238,29 +228,28 @@ export default function SignIn() {
             sx={{ mt: 1 }}
             onClick={handleGoogleReSignIn}
           >
-            Continue with other options
+            Continue with Google
           </Button>
 
-          {/* Hidden trigger for Clerk SignIn modal */}
+          {/* Hidden Google Trigger Button */}
           <SignInButton strategy="oauth_google" mode="modal">
             <span id="google-signin-trigger" style={{ display: "none" }} />
           </SignInButton>
         </Card>
       </SignUpContainer>
 
+      {/* Optional Forgot Password Dialog */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Forgot Password</DialogTitle>
         <DialogContent>
-          <Typography>
-            Reset instructions will be sent to your email.
-          </Typography>
+          <Typography>Reset instructions will be sent to your email.</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
 
-      {/* ✅ Toast Container */}
+      {/* ✅ Toast Message Container */}
       <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
