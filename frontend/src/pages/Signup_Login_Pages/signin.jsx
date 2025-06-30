@@ -220,15 +220,14 @@ export default function SignIn() {
           </form>
 
           <Typography sx={{ textAlign: "center", fontSize: "14px", mt: 2 }}>
-            Don’t have an account?{" "}
-            <Link
-              href="/signup"
+            <Typography
               variant="body2"
+              sx={{ color: primaryColor, cursor: "pointer" }}
+              onClick={() => navigate("/signup")}
               underline="hover"
-              sx={{ color: primaryColor }}
             >
-              Sign up
-            </Link>
+              Don’t have an account? Sign up
+            </Typography>
           </Typography>
 
           <Divider sx={{ my: 2 }}>or continue with</Divider>
