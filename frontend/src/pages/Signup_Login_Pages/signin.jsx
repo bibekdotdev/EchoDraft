@@ -117,7 +117,7 @@ export default function SignIn() {
       toast.success("✅ Signed in successfully!");
        setTimeout(() => {
          navigate("/");
-      }, 300);
+      }, 500);
       
      
     } catch (err) {
