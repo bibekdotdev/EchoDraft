@@ -258,23 +258,24 @@ const BlogForm = () => {
       formData.append("images", file, id);
     });
 
-    try {
+  try {
       setLoading(true);
       if (blogId) {
         await sendForUPdateBLogs(blogId, formData);
-        toast.success("\u2705 Blog updated successfully!");
-        setTimeout(() => navigate("/admin"), 500);
+        setLoading(false);
+        toast.success("✅ Blog updated successfully!");
+        navigate("/admin");
       } else {
         await createBlock(formData);
-        toast.success("\u2705 Blog created successfully!");
-        setTimeout(() => navigate("/admin"), 500);
+        setLoading(false);
+        toast.success("✅ Blog created successfully!");
       }
       resetForm();
     } catch (err) {
       console.error("Submit error:", err);
-      toast.error("\u274c Failed to submit blog. Please try again.");
-    } finally {
       setLoading(false);
+      toast.error("❌ Failed to submit blog. Please try again.");
+    } finally {
     }
   };
 
