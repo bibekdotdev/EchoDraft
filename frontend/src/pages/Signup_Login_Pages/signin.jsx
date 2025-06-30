@@ -219,16 +219,15 @@ export default function SignIn() {
             </Button>
           </form>
 
-          <Typography sx={{ textAlign: "center", fontSize: "14px", mt: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{ color: primaryColor, cursor: "pointer" }}
-              onClick={() => navigate("/signup")}
-              underline="hover"
-            >
-              Don’t have an account? Sign up
-            </Typography>
-          </Typography>
+         <Box sx={{ textAlign: "center", mt: 2 }}>
+  <Typography
+    variant="body2"
+    sx={{ color: primaryColor, cursor: "pointer", fontSize: "14px" }}
+    onClick={() => navigate("/signup")}
+  >
+    Don’t have an account? Sign up
+  </Typography>
+</Box>
 
           <Divider sx={{ my: 2 }}>or continue with</Divider>
 
