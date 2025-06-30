@@ -5,17 +5,12 @@ import {
   TextField,
   Typography,
   Card as MuiCard,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LockIcon from "@mui/icons-material/Lock";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import useAutStore from "../../store/useAuthStore";
-
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,7 +24,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: "auto",
   borderRadius: theme.spacing(2),
   boxShadow: theme.shadows[4],
-  backgroundColor: "#ffffff", // White background
+  backgroundColor: "#ffffff",
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(3),
     gap: theme.spacing(2),
@@ -37,7 +32,6 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-// Centered Container
 const OtpContainer = styled("div")(({ theme }) => ({
   height: "100vh",
   width: "100%",
@@ -51,8 +45,8 @@ const OtpContainer = styled("div")(({ theme }) => ({
 export default function OtpSubmit() {
   const [otp, setOtp] = React.useState("");
   const [error, setError] = React.useState("");
-  const [successDialogOpen, setSuccessDialogOpen] = React.useState(false);
   const { signUPRequestWith_verifyOtp } = useAutStore();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,8 +73,6 @@ export default function OtpSubmit() {
       toast.error(`❌ ${message}`);
     }
   };
-
-  const handleCloseDialog = () => setSuccessDialogOpen(false);
 
   return (
     <>
@@ -160,18 +152,9 @@ export default function OtpSubmit() {
             </Button>
           </Typography>
         </Card>
-
-        {/* Success Dialog */}
-        <Dialog open={successDialogOpen} onClose={handleCloseDialog}>
-          <DialogTitle sx={{ color: "#388087" }}>Success</DialogTitle>
-          <DialogContent>
-            <Typography>Your OTP has been verified successfully!</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Close</Button>
-          </DialogActions>
-        </Dialog>
       </OtpContainer>
+
+      {/* Toast Notification */}
       <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </>
   );
