@@ -19,8 +19,6 @@ import LockIcon from "@mui/icons-material/Lock";
 import { SignInButton, useClerk, useUser } from "@clerk/clerk-react";
 import useAutStore from "../../store/useAuthStore";
 import { useNavigate, useLocation } from "react-router-dom";
-
-// ✅ Toastify
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -74,7 +72,7 @@ export default function SignIn() {
     if (location.state?.toastMessage) {
       setTimeout(() => {
         toast.success(location.state.toastMessage);
-      }, 300); // show after small delay
+      }, 300);
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
@@ -91,7 +89,6 @@ export default function SignIn() {
               user.primaryEmailAddress?.emailAddress || "noemail@domain.com",
           };
           await clerk_auth(payload);
-         
           hasSynced.current = true;
         } catch (err) {
           toast.error("❌ Failed to sync Google login.");
@@ -112,14 +109,8 @@ export default function SignIn() {
     };
 
     try {
-      
       await call_Signin_routes(payload);
- 
-    
-         navigate("/");
-  
-      
-     
+      navigate("/");
     } catch (err) {
       toast.error("❌ Invalid email or password.");
     }
@@ -154,11 +145,6 @@ export default function SignIn() {
   };
 
   const handleClose = () => setOpen(false);
-
-  const handleGoogleReSignIn = async () => {
-    await signOut();
-    document.getElementById("google-signin-trigger").click();
-  };
 
   return (
     <>
@@ -231,16 +217,11 @@ export default function SignIn() {
 
           <Divider sx={{ my: 2 }}>or continue with</Divider>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleGoogleReSignIn}
-          >
-            Continue with other options
-          </Button>
-
-          <SignInButton strategy="oauth_google" mode="modal">
-            <span id="google-signin-trigger" style={{ display: "none" }} />
+          {/* ✅ Google Sign In - using redirect to avoid 403 error */}
+          <SignInButton strategy="oauth_google" mode="redirect">
+            <Button fullWidth variant="outlined" sx={{ textTransform: "none" }}>
+               Continue with other options
+            </Button>
           </SignInButton>
         </Card>
       </SignUpContainer>
