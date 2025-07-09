@@ -40,7 +40,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser("shhhhh"));
-
+app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/blocks", blockRoutes);
 app.use("/api/Auth", authRoutes);
