@@ -40,16 +40,18 @@ router.get("/adminscarchResult/:value", protectedRoute, async (req, res) => {
 
 router.get("/onFilterChange", protectedRoute, async (req, res) => {
   try {
-    console.log("hi");
     const { type, sort, time } = req.query;
-    let user = await User.findOne({ email: req.user });
+
+    // Get logged-in user
+    const user = await User.findOne({ email: req.user });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
     const query = { uploadedBy: user._id };
 
-    // Filter by blog type (unless it's "all")
-    if (type && type !== "all") {
-      query.blockType = type;
-    }
+    // Filter by block type
+    if (type && type !== "all") query.blockType = type;
 
     // Filter by time
     if (time) {
@@ -57,38 +59,58 @@ router.get("/onFilterChange", protectedRoute, async (req, res) => {
       let dateFilter;
 
       if (time === "today") {
-        dateFilter = new Date(now.setHours(0, 0, 0, 0));
+        dateFilter = new Date();
+        dateFilter.setHours(0, 0, 0, 0);
       } else if (time === "last7") {
-        dateFilter = new Date(now.setDate(now.getDate() - 7));
+        dateFilter = new Date();
+        dateFilter.setDate(now.getDate() - 7);
       } else if (time === "month") {
-        dateFilter = new Date(now.setDate(now.getDate() - 30));
+        dateFilter = new Date();
+        dateFilter.setDate(now.getDate() - 30);
       }
 
-      if (dateFilter) {
-        query.createdAt = { $gte: dateFilter };
-      }
+      if (dateFilter) query.createdAt = { $gte: dateFilter };
     }
 
-    // Apply sorting
-    let sortOption = {};
+    // Sorting
+    let aggregationPipeline = [
+      { $match: query },
+      {
+        $lookup: {
+          from: "users", // make sure this is the correct collection name for uploadedBy
+          localField: "uploadedBy",
+          foreignField: "_id",
+          as: "uploadedBy",
+        },
+      },
+      { $unwind: "$uploadedBy" },
+    ];
+
     if (sort === "topLikes") {
-      sortOption.likes = -1;
+      aggregationPipeline.push({
+        $addFields: { likesCount: { $size: "$likes" } },
+      });
+      aggregationPipeline.push({ $sort: { likesCount: -1 } });
     } else if (sort === "newest") {
-      sortOption.createdAt = -1;
+      aggregationPipeline.push({ $sort: { createdAt: -1 } });
     } else if (sort === "oldest") {
-      sortOption.createdAt = 1;
+      aggregationPipeline.push({ $sort: { createdAt: 1 } });
+    } else {
+      aggregationPipeline.push({ $sort: { createdAt: -1 } });
     }
 
-    console.log(query);
+    const blocks = await Block.aggregate(aggregationPipeline);
 
-    const blocks = await Block.find(query)
-      .sort(sortOption)
-      .populate("uploadedBy", "email");
-    console.log(blocks);
+    // Remove temporary likesCount field
+    const cleanedBlocks = blocks.map((block) => {
+      delete block.likesCount;
+      return block;
+    });
+
     res.json({ success: true, blocks });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
