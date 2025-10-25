@@ -33,7 +33,7 @@ cloudinary.config({
 
 app.use(
   cors({
-    origin: "https://echo-draft-67wv.onrender.com",
+    origin: "https://vibe-videos-c53m.onrender.com",
     credentials: true,
   })
 );
