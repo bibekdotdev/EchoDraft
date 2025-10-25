@@ -92,8 +92,8 @@ router.post("/verify-otp", async (req, res) => {
       res.cookie("token", emailJwtSign(email), {
   signed: true,
   httpOnly: true,
-  secure: true, // required for HTTPS
-  sameSite: "none", // allow cross-origin
+  secure: true, 
+  sameSite: "none", 
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
@@ -127,8 +127,8 @@ router.post("/signin", isSignin, async (req, res) => {
       res.cookie("token", emailJwtSign(email), {
   signed: true,
   httpOnly: true,
-  secure: true, // required for HTTPS
-  sameSite: "none", // allow cross-origin
+  secure: true, 
+  sameSite: "none",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
