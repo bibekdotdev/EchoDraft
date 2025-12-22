@@ -39,7 +39,7 @@ router.post("/otp", async (req, res) => {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.response);
 
-    // Hash the password using async/await
+  
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log(hashedPassword);
