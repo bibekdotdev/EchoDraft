@@ -159,8 +159,8 @@ router.post("/clerk-auth", async (req, res) => {
      res.cookie("token", emailJwtSign(email), {
   signed: true,
   httpOnly: true,
-  secure: true, // required for HTTPS
-  sameSite: "none", // allow cross-origin
+  secure: true, 
+  sameSite: "none", 
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
@@ -172,8 +172,8 @@ router.post("/clerk-auth", async (req, res) => {
      res.cookie("token", emailJwtSign(email), {
   signed: true,
   httpOnly: true,
-  secure: true, // required for HTTPS
-  sameSite: "none", // allow cross-origin
+  secure: true, 
+  sameSite: "none", 
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
@@ -190,7 +190,7 @@ router.post("/signOut", protectedRoute, (req, res, next) => {
   try {
     res.clearCookie("token", {
   httpOnly: true,
-  sameSite: "none", // 🔄 match with the cookie
+  sameSite: "none", 
   secure: true,
   signed: true,
   path: "/",
