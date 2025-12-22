@@ -199,13 +199,13 @@ router.post("/handleReview", protectedRoute, async (req, res) => {
     const { id, rating, comment } = req.body;
     const userEmail = req.user;
 
-    // Find the user ID based on email
+
     const user = await User.findOne({ email: userEmail }).select("_id");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Create and save the new comment
+ 
     const newComment = new Comment({
       comment_by: user._id,
       comment_for: id,
